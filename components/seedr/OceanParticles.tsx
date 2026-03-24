@@ -73,7 +73,7 @@ export function OceanParticles() {
   return (
     <Particles
       id="ocean-particles"
-      style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '52%', zIndex: 0, pointerEvents: 'none' }}
+      style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '55%', zIndex: 2, pointerEvents: 'none' }}
       options={{
         fullScreen: false,
         background: { color: { value: 'transparent' } },

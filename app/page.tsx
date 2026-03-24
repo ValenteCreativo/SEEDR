@@ -79,12 +79,14 @@ export default function LandingPage() {
           overflowX: 'scroll',
           scrollSnapType: 'x mandatory',
           scrollBehavior: 'smooth',
+          position: 'relative',
+          zIndex: 10,
         }}
         onScroll={handleScroll}
       >
         {/* ── PAGE 1: Hero ────────────────────────────────────────── */}
         <section
-          style={{ scrollSnapAlign: 'start', minWidth: '100vw', height: '100vh' }}
+          style={{ scrollSnapAlign: 'start', minWidth: '100vw', height: '100vh', background: 'transparent' }}
           className="relative flex flex-col items-center justify-center text-center px-4 overflow-hidden"
         >
           {/* Subtle radial glow */}
@@ -176,7 +178,7 @@ export default function LandingPage() {
 
         {/* ── PAGE 2: Features + Backer Benefits ──────────────────── */}
         <section
-          style={{ scrollSnapAlign: 'start', minWidth: '100vw', height: '100vh' }}
+          style={{ scrollSnapAlign: 'start', minWidth: '100vw', height: '100vh', background: 'transparent' }}
           className="relative flex flex-col items-center justify-center px-4 overflow-y-auto"
         >
           <div className="relative z-10 w-full max-w-4xl mx-auto py-16 space-y-10">
