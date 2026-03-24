@@ -109,7 +109,8 @@ export default function NorthStarScene({ scrollProgress }: Props) {
     ]);
     boat.add(new THREE.Line(mastGeo, new THREE.LineBasicMaterial({ color: 0xccbba0 })));
 
-    boat.scale.setScalar(0.42);
+    boat.scale.setScalar(0.5);
+    boat.rotation.y = Math.PI / 2;   // face sideways — sailing left → right
     boat.position.set(-7, -3.6, 0);
     scene.add(boat);
 
@@ -121,7 +122,7 @@ export default function NorthStarScene({ scrollProgress }: Props) {
       const t = clock.getElapsedTime();
       const p = progressRef.current;
 
-      const tx = THREE.MathUtils.lerp(-7, 7, p);
+      const tx = THREE.MathUtils.lerp(-7, 13, p);
       boat.position.x += (tx - boat.position.x) * 0.05;
       boat.rotation.z = Math.sin(t * 0.7) * 0.05;
       boat.rotation.x = Math.sin(t * 0.5) * 0.015;
