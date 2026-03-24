@@ -4,85 +4,132 @@ import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { Sprout, ArrowRight, Zap, Shield, Users } from 'lucide-react';
+import { ParticleField } from '@/components/seedr/ParticleField';
+
+const STATS = [
+  { value: '6', label: 'Projects live' },
+  { value: 'SOL', label: 'On-chain currency' },
+  { value: '∞', label: 'Ideas waiting' },
+];
 
 export default function LandingPage() {
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Particles */}
+      <ParticleField />
+
+      {/* Subtle radial glow behind hero */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(34,197,94,0.07) 0%, transparent 70%)',
+          zIndex: 1,
+        }}
+      />
+
       {/* Hero */}
-      <section className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
-        <div className="mb-6 w-16 h-16 rounded-2xl bg-seedGreen/10 flex items-center justify-center">
-          <Sprout className="w-8 h-8 text-seedGreen" />
+      <section className="relative flex-1 flex flex-col items-center justify-center text-center px-4 py-24" style={{ zIndex: 2 }}>
+        {/* Logo mark */}
+        <div className="mb-8 relative">
+          <div className="w-20 h-20 rounded-2xl bg-seedGreen/10 border border-seedGreen/20 flex items-center justify-center mx-auto">
+            <Sprout className="w-10 h-10 text-seedGreen" />
+          </div>
+          <div className="absolute inset-0 rounded-2xl blur-2xl bg-seedGreen/10 mx-auto w-20 h-20" />
         </div>
-        <h1 className="text-4xl sm:text-6xl font-bold text-white mb-4 leading-tight">
+
+        {/* Headline */}
+        <h1 className="text-5xl sm:text-7xl font-bold text-white mb-3 leading-none tracking-tight">
           Swipe ideas.
-          <br />
-          <span className="text-seedGreen">Back builders.</span>
         </h1>
-        <p className="text-gray-400 text-lg max-w-md mb-8">
-          Discover early-stage projects and support builders on Solana. One swipe
-          at a time.
+        <h1 className="text-5xl sm:text-7xl font-bold mb-6 leading-none tracking-tight"
+          style={{ WebkitTextFillColor: 'transparent', WebkitBackgroundClip: 'text', backgroundClip: 'text',
+            backgroundImage: 'linear-gradient(90deg, #22c55e, #86efac)' }}>
+          Back builders.
+        </h1>
+
+        <p className="text-gray-400 text-lg sm:text-xl max-w-lg mb-2 leading-relaxed">
+          The earliest ideas need the bravest backers.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3">
+        <p className="text-gray-500 text-base max-w-md mb-10">
+          Support builders directly on Solana — no gatekeepers, no equity, just belief.
+        </p>
+
+        {/* CTA */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-14">
           {connected ? (
             <Link
               href="/discover"
-              className="px-8 py-3.5 rounded-xl bg-seedGreen text-black font-semibold hover:bg-green-400 transition-colors inline-flex items-center gap-2"
+              className="px-8 py-3.5 rounded-xl bg-seedGreen text-black font-semibold hover:bg-green-400 transition-all hover:scale-105 inline-flex items-center gap-2 shadow-lg shadow-seedGreen/20"
             >
               Start Discovering <ArrowRight className="w-4 h-4" />
             </Link>
           ) : (
             <button
               onClick={() => setVisible(true)}
-              className="px-8 py-3.5 rounded-xl bg-seedGreen text-black font-semibold hover:bg-green-400 transition-colors"
+              className="px-8 py-3.5 rounded-xl bg-seedGreen text-black font-semibold hover:bg-green-400 transition-all hover:scale-105 shadow-lg shadow-seedGreen/20"
             >
               Connect Wallet to Start
             </button>
           )}
           <Link
             href="/discover"
-            className="px-8 py-3.5 rounded-xl border border-white/10 text-white hover:bg-white/5 transition-colors"
+            className="px-8 py-3.5 rounded-xl border border-white/10 text-white hover:bg-white/5 transition-all hover:border-white/20"
           >
             Browse Projects
           </Link>
         </div>
+
+        {/* Stats strip */}
+        <div className="flex gap-10 sm:gap-16">
+          {STATS.map(s => (
+            <div key={s.label} className="text-center">
+              <p className="text-2xl font-bold text-white">{s.value}</p>
+              <p className="text-xs text-gray-500 uppercase tracking-widest mt-0.5">{s.label}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Features */}
-      <section className="max-w-4xl mx-auto px-4 pb-20 grid sm:grid-cols-3 gap-6">
+      <section className="relative max-w-4xl mx-auto w-full px-4 pb-24 grid sm:grid-cols-3 gap-4" style={{ zIndex: 2 }}>
         {[
           {
             icon: Zap,
-            title: 'Swipe to Discover',
-            desc: 'Browse early-stage projects with an intuitive swipe interface. Save the ones that inspire you.',
+            title: 'Swipe to discover',
+            desc: 'Browse early-stage projects like you scroll your feed. Save what sparks something.',
           },
           {
             icon: Shield,
-            title: 'Direct SOL Support',
-            desc: 'Send SOL directly to builders on Solana devnet. No middlemen, fully on-chain.',
+            title: 'SOL goes straight to builders',
+            desc: 'No escrow theater. Your support lands in the builder\'s wallet, confirmed on-chain.',
           },
           {
             icon: Users,
-            title: 'Build & Back',
-            desc: 'Create your own project or support others. Be a builder, a backer, or both.',
+            title: 'Builder or backer — or both',
+            desc: 'Launch your project. Support someone else\'s. One wallet covers everything.',
           },
         ].map((f) => (
           <div
             key={f.title}
-            className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur"
+            className="p-6 rounded-2xl border border-white/5 hover:border-seedGreen/20 transition-colors group"
+            style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(12px)' }}
           >
-            <f.icon className="w-8 h-8 text-seedGreen mb-3" />
-            <h3 className="text-white font-semibold mb-1">{f.title}</h3>
-            <p className="text-sm text-gray-400">{f.desc}</p>
+            <div className="w-9 h-9 rounded-lg bg-seedGreen/10 flex items-center justify-center mb-4 group-hover:bg-seedGreen/20 transition-colors">
+              <f.icon className="w-5 h-5 text-seedGreen" />
+            </div>
+            <h3 className="text-white font-semibold mb-2 text-sm">{f.title}</h3>
+            <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
           </div>
         ))}
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-6 text-center text-xs text-gray-600">
-        Seedr — Built on Solana Devnet
+      <footer className="relative border-t border-white/5 py-6 text-center text-xs text-gray-600" style={{ zIndex: 2 }}>
+        Seedr — Plant early. Grow together. Built on{' '}
+        <span className="text-seedGreen">Solana Devnet</span>.
       </footer>
     </div>
   );
