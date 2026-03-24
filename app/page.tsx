@@ -5,6 +5,7 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { ArrowRight, Zap, Shield, Users, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { ParticleField } from '@/components/seedr/ParticleField';
 
@@ -24,28 +25,54 @@ export default function LandingPage() {
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [section, setSection] = useState(0);
+  const scrollLocked = useRef(false);
+  const N = 2;
 
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    if (max <= 0) return;
-    setScrollProgress(el.scrollLeft / max);
+  const advance = useCallback((dir: 1 | -1) => {
+    if (scrollLocked.current) return;
+    scrollLocked.current = true;
+    setTimeout(() => { scrollLocked.current = false; }, 1200);
+    setSection(s => Math.max(0, Math.min(N - 1, s + dir)));
   }, []);
 
-  // Redirect vertical wheel → horizontal scroll — attach to WINDOW for reliability
+  const scrollProgress = section / (N - 1);
+
   useEffect(() => {
     const onWheel = (e: WheelEvent) => {
-      const el = scrollRef.current;
-      if (!el) return;
       e.preventDefault();
-      el.scrollLeft += e.deltaY + e.deltaX;
+      if (scrollLocked.current) return;
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (Math.abs(delta) < 15) return;
+      advance(delta > 0 ? 1 : -1);
     };
     window.addEventListener('wheel', onWheel, { passive: false });
     return () => window.removeEventListener('wheel', onWheel);
-  }, []);
+  }, [advance]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') advance(1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   advance(-1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [advance]);
+
+  useEffect(() => {
+    let startX = 0;
+    const onTouchStart = (e: TouchEvent) => { startX = e.touches[0].clientX; };
+    const onTouchEnd   = (e: TouchEvent) => {
+      const dx = startX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 50) advance(dx > 0 ? 1 : -1);
+    };
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend',   onTouchEnd,   { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend',   onTouchEnd);
+    };
+  }, [advance]);
 
   return (
     <>
@@ -54,34 +81,16 @@ export default function LandingPage() {
       {/* Paper boat */}
       <NorthStarScene scrollProgress={scrollProgress} />
 
-      {/* Hide scrollbars globally for this page */}
-      <style>{`
-        .h-scroll-container::-webkit-scrollbar { display: none; }
-        .h-scroll-container { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes bounceX {
-          0%, 100% { transform: translateX(0); }
-          50% { transform: translateX(6px); }
-        }
-        .bounce-x { animation: bounceX 1.2s ease-in-out infinite; }
-      `}</style>
-
-      {/* Horizontal scroll wrapper */}
-      <div
-        ref={scrollRef}
-        className="h-scroll-container h-screen w-screen"
-        style={{
-          display: 'flex',
-          overflowX: 'scroll',
-          scrollSnapType: 'x mandatory',
-          scrollBehavior: 'smooth',
-          position: 'relative',
-          zIndex: 10,
-        }}
-        onScroll={handleScroll}
+      {/* ARVI-style: overflow:hidden outer + motion.div translate */}
+      <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', position: 'relative', zIndex: 10 }}>
+      <motion.div
+        style={{ display: 'flex', width: '200vw', height: '100vh' }}
+        animate={{ x: `${-section * 100}vw` }}
+        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
       >
         {/* ── PAGE 1: Hero ────────────────────────────────────────── */}
         <section
-          style={{ scrollSnapAlign: 'start', minWidth: '100vw', height: '100vh', background: 'transparent' }}
+          style={{ width: '100vw', height: '100vh', flexShrink: 0, background: 'transparent' }}
           className="relative flex flex-col items-center justify-center text-center px-4 overflow-hidden"
         >
           {/* Subtle radial glow */}
@@ -173,7 +182,7 @@ export default function LandingPage() {
 
         {/* ── PAGE 2: Features + Backer Benefits ──────────────────── */}
         <section
-          style={{ scrollSnapAlign: 'start', minWidth: '100vw', height: '100vh', background: 'transparent' }}
+          style={{ width: '100vw', height: '100vh', flexShrink: 0, background: 'transparent' }}
           className="relative flex flex-col items-center justify-center px-4 overflow-y-auto"
         >
           <div className="relative z-10 w-full max-w-4xl mx-auto py-16 space-y-10">
@@ -249,6 +258,7 @@ export default function LandingPage() {
             </footer>
           </div>
         </section>
+      </motion.div>
       </div>
     </>
   );
