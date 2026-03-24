@@ -6,7 +6,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { ArrowRight, Zap, Shield, Users, ChevronRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { OceanParticles, StarParticles, NorthStar } from '@/components/seedr/OceanParticles';
+import { ParticleField } from '@/components/seedr/ParticleField';
 
 // Dynamically import Three.js scene to avoid SSR issues
 const NorthStarScene = dynamic(
@@ -49,15 +49,10 @@ export default function LandingPage() {
 
   return (
     <>
-      {/* Layer 0: black bg + stars */}
-      <StarParticles />
-      {/* Layer 0: ocean particles */}
-      <OceanParticles />
-      {/* Layer 0: north star glow */}
-      <NorthStar />
-      {/* Layer 1: paper boat only (transparent bg Three.js) */}
+      {/* Particles background */}
+      <ParticleField />
+      {/* Paper boat */}
       <NorthStarScene scrollProgress={scrollProgress} />
-      <style>{`@keyframes starPulse { 0%,100% { transform: scale(1); opacity:1; } 50% { transform: scale(1.6); opacity:0.7; } }`}</style>
 
       {/* Hide scrollbars globally for this page */}
       <style>{`
