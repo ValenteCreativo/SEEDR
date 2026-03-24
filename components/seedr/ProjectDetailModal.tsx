@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, ExternalLink } from 'lucide-react';
+import { MessageCircle, X, ExternalLink } from 'lucide-react';
 import { ProgressBar } from './ProgressBar';
 import { MilestoneList } from './MilestoneList';
 import { BenefitsList } from './BenefitsList';
