@@ -99,3 +99,23 @@ CREATE TABLE IF NOT EXISTS saved_projects (
   UNIQUE(user_id, project_id)
 );
 `;
+
+export const MIGRATIONS_V2 = `
+-- Allow TEXT project_id (remove UUID FK constraint)
+ALTER TABLE supports ALTER COLUMN project_id TYPE TEXT;
+ALTER TABLE supports ALTER COLUMN supporter_user_id DROP NOT NULL;
+ALTER TABLE supports ALTER COLUMN builder_wallet_address DROP NOT NULL;
+ALTER TABLE supports ALTER COLUMN amount_lamports DROP NOT NULL;
+ALTER TABLE supports ALTER COLUMN amount_lamports SET DEFAULT 0;
+
+-- Add unique constraint on tx_signature
+DO $$ BEGIN
+  ALTER TABLE supports ADD CONSTRAINT supports_tx_signature_unique UNIQUE (tx_signature);
+EXCEPTION WHEN duplicate_table THEN NULL;
+END $$;
+
+-- Allow TEXT project_id in saved_projects
+ALTER TABLE saved_projects ALTER COLUMN project_id TYPE TEXT;
+ALTER TABLE saved_projects DROP CONSTRAINT IF EXISTS saved_projects_project_id_fkey;
+ALTER TABLE saved_projects DROP CONSTRAINT IF EXISTS saved_projects_user_id_fkey;
+`;
