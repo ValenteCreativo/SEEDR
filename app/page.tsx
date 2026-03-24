@@ -131,7 +131,7 @@ export default function LandingPage() {
               Find what&apos;s next before it&apos;s everywhere.
             </p>
             <p className="text-gray-500 text-base max-w-md mb-10">
-              The first crowdfunding platform where an AI agent evaluates if builders actually deliver.
+              The builder support platform where an AI agent verifies if builders actually deliver.
             </p>
 
             {/* CTA */}
@@ -152,10 +152,10 @@ export default function LandingPage() {
                 </button>
               )}
               <Link
-                href="/discover"
+                href="/profile"
                 className="px-8 py-3.5 rounded-xl border border-white/10 text-white hover:bg-white/5 transition-all hover:border-white/20"
               >
-                Browse Projects
+                My Profile
               </Link>
             </div>
 
@@ -197,13 +197,13 @@ export default function LandingPage() {
                 },
                 {
                   icon: Shield,
-                  title: 'SOL goes straight to builders',
-                  desc: "No escrow theater. Your support lands in the builder's wallet, confirmed on-chain.",
+                  title: 'Agent-verified accountability',
+                  desc: 'Builders commit to milestones. SeedrAgent evaluates delivery and updates their Seed Score — no honor system.',
                 },
                 {
                   icon: Users,
                   title: 'Builder or backer — or both',
-                  desc: 'Launch your project. Support someone else\'s. One wallet covers everything.',
+                  desc: 'Launch your project with milestones. Support others with confidence. One wallet, full transparency.',
                 },
               ].map(f => (
                 <div
