@@ -39,17 +39,20 @@ export function ProjectCard({
       onClick={onTap}
       className="w-full h-full rounded-2xl overflow-hidden border border-white/10 bg-[#15151a] cursor-pointer select-none"
     >
-      {/* Cover gradient area */}
-      <div
-        className={`h-44 bg-gradient-to-br ${gradient} flex items-end p-5`}
-      >
-        <div>
-          <span
-            className={`inline-block px-2.5 py-0.5 text-[11px] font-medium rounded-full ${catColor} mb-2`}
-          >
+      {/* Cover image or gradient */}
+      <div className={`h-44 relative flex items-end p-5 bg-gradient-to-br ${gradient}`}>
+        {project.cover_image_url && (
+          <img
+            src={project.cover_image_url}
+            alt={project.title}
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+        )}
+        <div className="relative z-10">
+          <span className={`inline-block px-2.5 py-0.5 text-[11px] font-medium rounded-full ${catColor} mb-2`}>
             {project.category}
           </span>
-          <h2 className="text-2xl font-bold text-white">{project.title}</h2>
+          <h2 className="text-2xl font-bold text-white drop-shadow-lg">{project.title}</h2>
         </div>
       </div>
 

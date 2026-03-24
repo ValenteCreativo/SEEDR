@@ -34,6 +34,7 @@ export interface MockBenefit {
 export const MOCK_PROJECTS: MockProject[] = [
   {
     id: 'mock-1',
+    cover_image_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV',
     title: 'Waylearn',
     tagline: 'Interactive learning paths for Web3 builders',
@@ -43,7 +44,6 @@ export const MOCK_PROJECTS: MockProject[] = [
     stage: 'early',
     funding_goal_sol: 15,
     current_backed_sol: 4.2,
-    cover_image_url: null,
     project_url: null,
     status: 'active',
     created_at: '2025-03-01T00:00:00Z',
@@ -60,6 +60,7 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-2',
+    cover_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
     title: 'LoopMarket',
     tagline: 'Circular economy marketplace for local communities',
@@ -69,7 +70,6 @@ export const MOCK_PROJECTS: MockProject[] = [
     stage: 'early',
     funding_goal_sol: 25,
     current_backed_sol: 8.5,
-    cover_image_url: null,
     project_url: null,
     status: 'active',
     created_at: '2025-02-15T00:00:00Z',
@@ -86,6 +86,7 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-3',
+    cover_image_url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
     title: 'PulseNode',
     tagline: 'Open-source climate sensor network for urban areas',
@@ -95,7 +96,6 @@ export const MOCK_PROJECTS: MockProject[] = [
     stage: 'early',
     funding_goal_sol: 20,
     current_backed_sol: 12.3,
-    cover_image_url: null,
     project_url: null,
     status: 'active',
     created_at: '2025-01-20T00:00:00Z',
@@ -112,6 +112,7 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-4',
+    cover_image_url: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '6sbzC1eH4FTujJXWj51eQe25cYvr4xfXbJ1vAj7j2k5J',
     title: 'Frameshift',
     tagline: 'AI-powered creative brief tool for indie studios',
@@ -121,7 +122,6 @@ export const MOCK_PROJECTS: MockProject[] = [
     stage: 'early',
     funding_goal_sol: 12,
     current_backed_sol: 3.7,
-    cover_image_url: null,
     project_url: null,
     status: 'active',
     created_at: '2025-03-05T00:00:00Z',
@@ -138,6 +138,7 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-5',
+    cover_image_url: 'https://images.unsplash.com/photo-1518432031352-d6fc5734595a?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '3Js7k9mHtMGwZnkzRiGs8VgtEbXFgULEYMpvRFvuRL5n',
     title: 'GlyphOS',
     tagline: 'Minimal OS interface for maker hardware',
@@ -147,7 +148,6 @@ export const MOCK_PROJECTS: MockProject[] = [
     stage: 'early',
     funding_goal_sol: 30,
     current_backed_sol: 6.1,
-    cover_image_url: null,
     project_url: null,
     status: 'active',
     created_at: '2025-02-28T00:00:00Z',
@@ -164,6 +164,7 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-6',
+    cover_image_url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',
     title: 'Stackwise',
     tagline: 'Personal knowledge graph for developers',
@@ -173,7 +174,6 @@ export const MOCK_PROJECTS: MockProject[] = [
     stage: 'early',
     funding_goal_sol: 18,
     current_backed_sol: 9.8,
-    cover_image_url: null,
     project_url: null,
     status: 'active',
     created_at: '2025-02-10T00:00:00Z',
