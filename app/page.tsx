@@ -6,6 +6,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { ArrowRight, Zap, Shield, Users, ChevronRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { OceanParticles, StarParticles, NorthStar } from '@/components/seedr/OceanParticles';
 
 // Dynamically import Three.js scene to avoid SSR issues
 const NorthStarScene = dynamic(
@@ -34,22 +35,29 @@ export default function LandingPage() {
     setScrollProgress(el.scrollLeft / max);
   }, []);
 
-  // Redirect vertical wheel → horizontal scroll (passive:false required)
+  // Redirect vertical wheel → horizontal scroll — attach to WINDOW for reliability
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
     const onWheel = (e: WheelEvent) => {
+      const el = scrollRef.current;
+      if (!el) return;
       e.preventDefault();
       el.scrollLeft += e.deltaY + e.deltaX;
     };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel);
   }, []);
 
   return (
     <>
-      {/* Three.js background — fixed fullscreen */}
+      {/* Layer 0: black bg + stars */}
+      <StarParticles />
+      {/* Layer 0: ocean particles */}
+      <OceanParticles />
+      {/* Layer 0: north star glow */}
+      <NorthStar />
+      {/* Layer 1: paper boat only (transparent bg Three.js) */}
       <NorthStarScene scrollProgress={scrollProgress} />
+      <style>{`@keyframes starPulse { 0%,100% { transform: scale(1); opacity:1; } 50% { transform: scale(1.6); opacity:0.7; } }`}</style>
 
       {/* Hide scrollbars globally for this page */}
       <style>{`
