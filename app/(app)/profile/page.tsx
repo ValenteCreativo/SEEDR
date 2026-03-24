@@ -9,6 +9,7 @@ import { CreateProjectForm } from '@/components/seedr/CreateProjectForm';
 import { BuilderDashboard } from '@/components/seedr/BuilderDashboard';
 import Link from 'next/link';
 import { MOCK_PROJECTS } from '@/lib/mock-data';
+import { ProfileDashboard } from '@/components/seedr/ProfileDashboard';
 
 type Tab = 'backed' | 'saved' | 'projects' | 'launch';
 
@@ -105,13 +106,16 @@ export default function ProfilePage() {
           <p className="text-white font-semibold">My Profile</p>
           <p className="text-gray-500 text-xs font-mono truncate">{wallet.publicKey?.toBase58()}</p>
         </div>
-        {totalBacked > 0 && (
-          <div className="text-right">
-            <p className="text-seedGreen font-bold text-xl">{totalBacked.toFixed(2)} SOL</p>
-            <p className="text-gray-500 text-xs">total backed</p>
-          </div>
-        )}
       </div>
+
+
+      {/* Dashboard */}
+      <ProfileDashboard
+        backedProjects={backedProjects}
+        savedCount={savedProjects.length}
+        builderCount={builderProjects.length}
+        walletAddress={wallet.publicKey!.toBase58()}
+      />
 
       {/* Tabs */}
       <div className="grid grid-cols-4 gap-1 mb-6 p-1 rounded-xl"
