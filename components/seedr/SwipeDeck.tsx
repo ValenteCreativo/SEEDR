@@ -10,7 +10,10 @@ import type { MockProject } from '@/lib/mock-data';
 export function SwipeDeck({ projects }: { projects: MockProject[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [detailProject, setDetailProject] = useState<MockProject | null>(null);
-  const [saved, setSaved] = useState<string[]>([]);
+  const [saved, setSaved] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try { return JSON.parse(localStorage.getItem('seedr-saved') || '[]'); } catch { return []; }
+  });
   const [isDragging, setIsDragging] = useState(false);
 
   const x = useMotionValue(0);
@@ -23,7 +26,11 @@ export function SwipeDeck({ projects }: { projects: MockProject[] }) {
 
   function handleNext(direction: 'left' | 'right') {
     if (direction === 'right' && currentProject) {
-      setSaved((prev) => [...prev, currentProject.id]);
+      setSaved((prev) => {
+        const next = [...prev, currentProject.id];
+        try { localStorage.setItem('seedr-saved', JSON.stringify(next)); } catch {}
+        return next;
+      });
     }
     animate(x, direction === 'left' ? -300 : 300, {
       duration: 0.3,
