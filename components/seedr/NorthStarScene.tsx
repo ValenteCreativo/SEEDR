@@ -124,7 +124,7 @@ export default function NorthStarScene({ scrollProgress }: Props) {
 
       // Right edge of screen ≈ 5.8 world units; cards end ~3.5; boat just past them
       const rightEdge = Math.tan((Math.PI / 180) * 22.5) * 14 * (window.innerWidth / window.innerHeight);
-      const tx = THREE.MathUtils.lerp(-7, rightEdge * 0.72, p);
+      const tx = THREE.MathUtils.lerp(-7, rightEdge * 0.82, p);
       boat.position.x += (tx - boat.position.x) * 0.05;
       boat.rotation.z = Math.sin(t * 0.7) * 0.05;
       boat.rotation.x = Math.sin(t * 0.5) * 0.015;
