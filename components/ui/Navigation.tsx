@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
-import { Sprout } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -20,7 +20,7 @@ export function Navigation() {
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2 text-white font-bold text-lg">
-            <Sprout className="w-6 h-6 text-seedGreen" />
+            <img src="/favicon.png" alt="Seedr" className="w-6 h-6 object-contain" />
             Seedr
           </Link>
           <div className="hidden sm:flex items-center gap-1">

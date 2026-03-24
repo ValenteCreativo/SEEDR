@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRef, useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import { Sprout, ArrowRight, Zap, Shield, Users, ChevronRight } from 'lucide-react';
+import { ArrowRight, Zap, Shield, Users, ChevronRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 // Dynamically import Three.js scene to avoid SSR issues
@@ -80,7 +80,7 @@ export default function LandingPage() {
             {/* Logo mark */}
             <div className="mb-8 relative">
               <div className="w-20 h-20 rounded-2xl bg-seedGreen/10 border border-seedGreen/20 flex items-center justify-center mx-auto">
-                <Sprout className="w-10 h-10 text-seedGreen" />
+                <img src="/favicon.png" alt="Seedr" className="w-10 h-10 object-contain" />
               </div>
               <div className="absolute inset-0 rounded-2xl blur-2xl bg-seedGreen/10 mx-auto w-20 h-20" />
             </div>
@@ -227,6 +227,8 @@ export default function LandingPage() {
             <footer className="border-t border-white/5 py-4 text-center text-xs text-gray-600">
               Seedr — Plant early. Grow together. Built on{' '}
               <span className="text-seedGreen">Solana Devnet</span>.
+              <br />
+              <span className="text-gray-500">From México, with 🩵</span>
             </footer>
           </div>
         </section>
