@@ -10,6 +10,8 @@ export interface MockProject {
   current_backed_sol: number;
   cover_image_url: string | null;
   project_url: string | null;
+  seed_score?: number;
+  seed_tier?: string;
   status: string;
   created_at: string;
   milestones: MockMilestone[];
@@ -34,6 +36,8 @@ export interface MockBenefit {
 export const MOCK_PROJECTS: MockProject[] = [
   {
     id: 'mock-1',
+    seed_score: 87,
+    seed_tier: 'Rooted',
     cover_image_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV',
     title: 'Waylearn',
@@ -60,6 +64,8 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-2',
+    seed_score: 72,
+    seed_tier: 'Growing',
     cover_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
     title: 'LoopMarket',
@@ -86,6 +92,8 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-3',
+    seed_score: 91,
+    seed_tier: 'Rooted',
     cover_image_url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
     title: 'PulseNode',
@@ -112,6 +120,8 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-4',
+    seed_score: 64,
+    seed_tier: 'Sprouting',
     cover_image_url: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '6sbzC1eH4FTujJXWj51eQe25cYvr4xfXbJ1vAj7j2k5J',
     title: 'Frameshift',
@@ -138,6 +148,8 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-5',
+    seed_score: 78,
+    seed_tier: 'Growing',
     cover_image_url: 'https://images.unsplash.com/photo-1518432031352-d6fc5734595a?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '3Js7k9mHtMGwZnkzRiGs8VgtEbXFgULEYMpvRFvuRL5n',
     title: 'GlyphOS',
@@ -164,6 +176,8 @@ export const MOCK_PROJECTS: MockProject[] = [
   },
   {
     id: 'mock-6',
+    seed_score: 55,
+    seed_tier: 'Sprouting',
     cover_image_url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',
     title: 'Stackwise',

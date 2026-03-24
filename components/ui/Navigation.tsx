@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 const navLinks = [
   { href: '/discover', label: 'Discover' },
   { href: '/builder', label: 'Builder' },
-  { href: '/backer', label: 'Backer' },
+  { href: '/profile', label: 'Profile' },
 ];
 
 export function Navigation() {

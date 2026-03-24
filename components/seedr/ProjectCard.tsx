@@ -12,6 +12,13 @@ const categoryColors: Record<string, string> = {
   Productivity: 'bg-cyan-500/20 text-cyan-400',
 };
 
+
+const tierColors: Record<string, string> = {
+  'Sprouting': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+  'Growing':   'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+  'Rooted':    'bg-seedGreen/20 text-seedGreen border-seedGreen/30',
+};
+
 const gradients = [
   'from-green-900/60 to-emerald-800/30',
   'from-purple-900/60 to-indigo-800/30',
@@ -65,9 +72,16 @@ export function ProjectCard({
           current={project.current_backed_sol}
           goal={project.funding_goal_sol}
         />
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <span className="inline-block w-2 h-2 rounded-full bg-seedGreen" />
-          {project.stage === 'early' ? 'Early Stage' : project.stage}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <span className="inline-block w-2 h-2 rounded-full bg-seedGreen" />
+            {project.stage === 'early' ? 'Early Stage' : project.stage}
+          </div>
+          {project.seed_score && project.seed_tier && (
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${tierColors[project.seed_tier] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'}`}>
+              🌱 {project.seed_tier} · {project.seed_score}
+            </span>
+          )}
         </div>
       </div>
     </div>

@@ -51,10 +51,10 @@ export default function LandingPage() {
         </h1>
 
         <p className="text-gray-400 text-lg sm:text-xl max-w-lg mb-2 leading-relaxed">
-          The earliest ideas need the bravest backers.
+          Find what&apos;s next before it&apos;s everywhere.
         </p>
         <p className="text-gray-500 text-base max-w-md mb-10">
-          Support builders directly on Solana — no gatekeepers, no equity, just belief.
+          Your support goes straight to the builder — confirmed on-chain, zero middlemen.
         </p>
 
         {/* CTA */}

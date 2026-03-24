@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   title: 'Seedr — Swipe Ideas. Back Builders.',
   description:
     'Discover and support early-stage projects on Solana. Swipe to find your next favorite project.',
+  icons: {
+    icon: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
