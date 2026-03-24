@@ -12,10 +12,18 @@ export interface MockProject {
   project_url: string | null;
   seed_score?: number;
   seed_tier?: string;
+  agent_milestones?: ProjectMilestone[];
   status: string;
   created_at: string;
   milestones: MockMilestone[];
   benefits: MockBenefit[];
+}
+
+export interface ProjectMilestone {
+  title: string;
+  due_date: string;
+  criteria: string;
+  evidence?: string;
 }
 
 export interface MockMilestone {
@@ -38,6 +46,11 @@ export const MOCK_PROJECTS: MockProject[] = [
     id: 'mock-1',
     seed_score: 87,
     seed_tier: 'Rooted',
+    agent_milestones: [
+      { title: 'MVP Launch', due_date: '2026-02-01', criteria: 'Working demo deployed with 10 beta users', evidence: 'https://waylearn.io/beta — 847 users signed up' },
+      { title: 'Solana Integration', due_date: '2026-03-01', criteria: 'On-chain credentials issued via Solana', evidence: 'Program ID 56XMje deployed, 120 credentials minted' },
+      { title: 'First Course Live', due_date: '2026-04-01', criteria: '1 full course available with completion NFT', evidence: '' },
+    ],
     cover_image_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV',
     title: 'Waylearn',
@@ -66,6 +79,11 @@ export const MOCK_PROJECTS: MockProject[] = [
     id: 'mock-2',
     seed_score: 72,
     seed_tier: 'Growing',
+    agent_milestones: [
+      { title: 'Smart Contract Audit', due_date: '2026-01-15', criteria: 'Third-party audit completed and published', evidence: 'Partial — internal review only, no external auditor' },
+      { title: 'Beta Marketplace', due_date: '2026-03-01', criteria: '5 sellers onboarded with real inventory', evidence: 'https://loopmarket.xyz — 3 sellers live' },
+      { title: 'Mobile App', due_date: '2026-05-01', criteria: 'iOS + Android apps in stores', evidence: '' },
+    ],
     cover_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
     title: 'LoopMarket',
@@ -94,6 +112,11 @@ export const MOCK_PROJECTS: MockProject[] = [
     id: 'mock-3',
     seed_score: 91,
     seed_tier: 'Rooted',
+    agent_milestones: [
+      { title: 'Hardware Prototype', due_date: '2026-01-01', criteria: '10 IoT nodes manufactured and deployed', evidence: '12 nodes live in Mexico City — dashboard.pulsenode.io' },
+      { title: 'DePIN Integration', due_date: '2026-02-15', criteria: 'Data streaming to Solana on-chain', evidence: 'Verified — 14,200 on-chain records logged' },
+      { title: 'Network Expansion', due_date: '2026-04-01', criteria: '3 cities with active nodes', evidence: '' },
+    ],
     cover_image_url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=300&fit=crop&auto=format',
     creator_wallet_address: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
     title: 'PulseNode',

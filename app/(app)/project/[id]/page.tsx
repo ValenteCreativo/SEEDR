@@ -71,7 +71,7 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
           {project.description}
         </p>
 
-        {project.milestones && <MilestoneList milestones={project.milestones} />}
+        {project.milestones && <MilestoneList milestones={project.milestones as any} />}
         {project.benefits && <BenefitsList benefits={project.benefits} />}
 
         <button

@@ -131,7 +131,7 @@ export default function LandingPage() {
               Find what&apos;s next before it&apos;s everywhere.
             </p>
             <p className="text-gray-500 text-base max-w-md mb-10">
-              Your support goes straight to the builder — confirmed on-chain, zero middlemen.
+              The first crowdfunding platform where an AI agent evaluates if builders actually deliver.
             </p>
 
             {/* CTA */}

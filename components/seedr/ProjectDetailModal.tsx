@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { MessageCircle, X, ExternalLink } from 'lucide-react';
+import { AgentEvaluation } from './AgentEvaluation';
 import { ProgressBar } from './ProgressBar';
 import { MilestoneList } from './MilestoneList';
 import { BenefitsList } from './BenefitsList';
@@ -65,7 +66,7 @@ export function ProjectDetailModal({
             </p>
           </div>
 
-          <MilestoneList milestones={project.milestones} />
+          {(project.milestones as any[]).every((m: any) => m.id) && <MilestoneList milestones={project.milestones as any} />}
           <BenefitsList benefits={project.benefits} />
 
           {project.project_url && (
