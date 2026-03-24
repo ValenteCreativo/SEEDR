@@ -12,7 +12,7 @@ export default function DiscoverPage() {
   useEffect(() => {
     fetch('/api/projects')
       .then((r) => r.json())
-      .then((data) => setProjects(data.projects || data || []))
+      .then((data) => { const p = data.projects || data || []; setProjects([...p].sort(() => Math.random() - 0.5)); })
       .catch(() => setProjects([]))
       .finally(() => setLoading(false));
   }, []);

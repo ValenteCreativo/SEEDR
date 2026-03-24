@@ -11,6 +11,7 @@ export function SwipeDeck({ projects }: { projects: MockProject[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [detailProject, setDetailProject] = useState<MockProject | null>(null);
   const [saved, setSaved] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-15, 15]);
@@ -33,8 +34,13 @@ export function SwipeDeck({ projects }: { projects: MockProject[] }) {
     });
   }
 
+  function handleDragStart() {
+    setIsDragging(false);
+  }
+
   function handleDragEnd(_: any, info: { offset: { x: number }; velocity: { x: number } }) {
     if (Math.abs(info.offset.x) > 100 || Math.abs(info.velocity.x) > 500) {
+      setIsDragging(true);
       handleNext(info.offset.x < 0 ? 'left' : 'right');
     } else {
       animate(x, 0, { type: 'spring', stiffness: 500, damping: 30 });
@@ -83,7 +89,8 @@ export function SwipeDeck({ projects }: { projects: MockProject[] }) {
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.7}
-          onDragEnd={handleDragEnd}
+          onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
         >
           {/* Swipe indicators */}
           <motion.div
@@ -102,7 +109,7 @@ export function SwipeDeck({ projects }: { projects: MockProject[] }) {
           <ProjectCard
             project={currentProject}
             index={currentIndex}
-            onTap={() => setDetailProject(currentProject)}
+            onTap={() => { if (!isDragging) setDetailProject(currentProject); }}
           />
         </motion.div>
       </div>

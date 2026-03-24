@@ -126,6 +126,34 @@ export default function LandingPage() {
         ))}
       </section>
 
+
+      {/* What backers get */}
+      <section className="relative max-w-4xl mx-auto w-full px-4 pb-12" style={{ zIndex: 2 }}>
+        <div className="rounded-2xl border border-seedGreen/20 p-8"
+          style={{ background: 'rgba(34,197,94,0.04)', backdropFilter: 'blur(12px)' }}>
+          <h2 className="text-lg font-bold text-white mb-1">What backers get</h2>
+          <p className="text-gray-500 text-sm mb-6">Supporting a builder is not charity — it is early access to what comes next.</p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { emoji: '🎟️', title: 'Early access', desc: 'Get in before public launch. Test, use, and shape the product from day one.' },
+              { emoji: '🏅', title: 'Supporter recognition', desc: 'On-chain proof you backed this before it was cool. Your wallet address on the record.' },
+              { emoji: '🌱', title: 'Milestone-based perks', desc: 'As the project hits milestones, backers unlock benefits defined by the builder.' },
+            ].map(b => (
+              <div key={b.title} className="flex gap-3">
+                <span className="text-2xl">{b.emoji}</span>
+                <div>
+                  <p className="text-white font-semibold text-sm mb-1">{b.title}</p>
+                  <p className="text-gray-500 text-xs leading-relaxed">{b.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-600 mt-6 border-t border-white/5 pt-4">
+            Supporting a project on Seedr is an on-chain contribution, not an equity investment. Benefits are defined by each builder and are not guaranteed financial returns.
+          </p>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="relative border-t border-white/5 py-6 text-center text-xs text-gray-600" style={{ zIndex: 2 }}>
         Seedr — Plant early. Grow together. Built on{' '}
