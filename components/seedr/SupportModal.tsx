@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { X, ExternalLink, Loader2, PartyPopper } from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import { transferSOL } from '@/lib/solana';
+import { transferSOL, computeFee } from '@/lib/solana';
 import { solscanTxUrl } from '@/lib/utils';
 import type { MockProject } from '@/lib/mock-data';
 
@@ -135,6 +135,25 @@ export function SupportModal({
                   </button>
                 ))}
               </div>
+            </div>
+
+
+            {/* Fee breakdown */}
+            {(() => {
+              const { fee, builder } = computeFee(parseFloat(amount) || 0);
+              return (
+                <div className="flex justify-between text-xs text-gray-600 mb-3 px-1">
+                  <span>Builder receives</span>
+                  <span className="text-gray-400">{builder.toFixed(4)} SOL</span>
+                </div>
+              );
+            })()}
+            <div className="flex justify-between text-xs text-gray-600 mb-1 px-1">
+              <span className="flex items-center gap-1">
+                <span className="w-1 h-1 rounded-full bg-seedGreen/40 inline-block" />
+                Seedr fee (0.5%)
+              </span>
+              <span>{((parseFloat(amount) || 0) * 0.005).toFixed(4)} SOL</span>
             </div>
 
             <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 mb-5">
