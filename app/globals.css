@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #0d0d0f;
+  color: #e5e5e5;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+/* Override wallet adapter modal styles */
+.wallet-adapter-modal-wrapper {
+  background-color: #1a1a1e !important;
+}
+.wallet-adapter-button {
+  background-color: #22c55e !important;
+}
