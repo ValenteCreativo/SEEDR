@@ -25,9 +25,9 @@ export function ProjectDetailModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="w-full max-w-lg bg-[#1a1a1e] border border-white/10 rounded-2xl relative my-8">
+      <div className="w-full max-w-sm bg-[#1a1a1e] border border-white/10 rounded-2xl relative overflow-y-auto" style={{ maxHeight: '80vh' }}>
         <button
           onClick={onClose}
           className="absolute top-3 right-3 z-10 text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-colors"
