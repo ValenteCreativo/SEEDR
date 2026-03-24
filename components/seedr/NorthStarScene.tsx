@@ -3,308 +3,250 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-interface NorthStarSceneProps {
-  scrollProgress?: number; // 0 to 1
+interface Props {
+  scrollProgress: number;
 }
 
-export function NorthStarScene({ scrollProgress = 0 }: NorthStarSceneProps) {
+export default function NorthStarScene({ scrollProgress }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef(scrollProgress);
+  const progressRef = useRef(scrollProgress);
 
-  // Keep scroll ref in sync without triggering re-render
   useEffect(() => {
-    scrollRef.current = scrollProgress;
+    progressRef.current = scrollProgress;
   }, [scrollProgress]);
 
   useEffect(() => {
-    if (!mountRef.current) return;
-    const container = mountRef.current;
+    const mount = mountRef.current;
+    if (!mount) return;
 
-    // ─── Renderer ───────────────────────────────────────────────
+    // ── Renderer ────────────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.shadowMap.enabled = false;
-    container.appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setClearColor(0x0b1026, 1);
+    mount.appendChild(renderer.domElement);
 
-    // ─── Scene & Camera ─────────────────────────────────────────
+    // ── Scene / Camera ──────────────────────────────────────────────
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      60,
-      container.clientWidth / container.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.set(0, 12, 55);
-    camera.lookAt(0, 0, 0);
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+    camera.position.set(0, 8, 30);
+    camera.lookAt(0, 2, 0);
 
-    // ─── Sky gradient background ─────────────────────────────────
-    function makeSkyTexture() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 2;
-      canvas.height = 512;
-      const ctx = canvas.getContext('2d')!;
-      const grad = ctx.createLinearGradient(0, 0, 0, 512);
-      grad.addColorStop(0, '#050810');   // top — near-black deep night
-      grad.addColorStop(0.45, '#080c1a');
-      grad.addColorStop(0.75, '#0a0f1a');
-      grad.addColorStop(1, '#0a0f2e');   // bottom — deep ocean blue-purple
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 2, 512);
-      const tex = new THREE.CanvasTexture(canvas);
-      return tex;
-    }
-    scene.background = makeSkyTexture();
+    // ── Lights ──────────────────────────────────────────────────────
+    scene.add(new THREE.AmbientLight(0xc8d8ff, 0.9));
+    const moonLight = new THREE.DirectionalLight(0xddeeff, 0.6);
+    moonLight.position.set(-10, 20, 10);
+    scene.add(moonLight);
 
-    // ─── Lighting ────────────────────────────────────────────────
-    const ambientLight = new THREE.AmbientLight(0x1a1a3e, 0.6);
-    scene.add(ambientLight);
+    // ── Sky gradient background (canvas texture) ────────────────────
+    const bgCanvas = document.createElement('canvas');
+    bgCanvas.width = 2; bgCanvas.height = 256;
+    const bgCtx = bgCanvas.getContext('2d')!;
+    const grad = bgCtx.createLinearGradient(0, 0, 0, 256);
+    grad.addColorStop(0, '#060d1f');   // near-black top
+    grad.addColorStop(0.5, '#0b1a3a'); // deep blue mid
+    grad.addColorStop(1, '#112244');   // slightly lighter at horizon
+    bgCtx.fillStyle = grad;
+    bgCtx.fillRect(0, 0, 2, 256);
+    scene.background = new THREE.CanvasTexture(bgCanvas);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.2);
-    dirLight.position.set(30, 40, 20);
-    scene.add(dirLight);
-
-    // North star point light — intensity updated in animation loop
-    const starLight = new THREE.PointLight(0xfff8e0, 0.5, 200);
-    starLight.position.set(35, 10, -30);
-    scene.add(starLight);
-
-    // ─── Ocean plane (animated waves) ───────────────────────────
-    const oceanGeo = new THREE.PlaneGeometry(300, 300, 80, 80);
-    oceanGeo.rotateX(-Math.PI / 2);
-    const oceanMat = new THREE.MeshStandardMaterial({
-      color: 0x0a0f2e,
-      metalness: 0.35,
-      roughness: 0.65,
-      side: THREE.FrontSide,
-    });
-    const ocean = new THREE.Mesh(oceanGeo, oceanMat);
-    ocean.position.y = 0;
-    scene.add(ocean);
-
-    // Store original Y positions for wave animation
-    const posAttr = oceanGeo.attributes.position as THREE.BufferAttribute;
-    const originalY = new Float32Array(posAttr.count);
-    for (let i = 0; i < posAttr.count; i++) {
-      originalY[i] = posAttr.getY(i);
-    }
-
-    // ─── Starfield ───────────────────────────────────────────────
-    const starCount = 400;
-    const starPositions = new Float32Array(starCount * 3);
+    // ── Stars ───────────────────────────────────────────────────────
+    const starCount = 280;
+    const starPos = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount; i++) {
-      starPositions[i * 3]     = (Math.random() - 0.5) * 300;    // x
-      starPositions[i * 3 + 1] = Math.random() * 60 + 8;         // y — upper half
-      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 150 - 20; // z — mostly behind camera
+      starPos[i * 3]     = (Math.random() - 0.5) * 200;
+      starPos[i * 3 + 1] = Math.random() * 40 + 5;
+      starPos[i * 3 + 2] = (Math.random() - 0.5) * 80 - 20;
     }
     const starGeo = new THREE.BufferGeometry();
-    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    const starMat = new THREE.PointsMaterial({
-      color: 0xd0e8ff,
-      size: 0.4,
-      sizeAttenuation: true,
-      transparent: true,
-      opacity: 0.85,
-    });
-    const stars = new THREE.Points(starGeo, starMat);
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.18, sizeAttenuation: true, transparent: true, opacity: 0.85 }));
     scene.add(stars);
 
-    // ─── North Star (sprite / glowing point) ─────────────────────
+    // ── North Star ──────────────────────────────────────────────────
     const northStarGeo = new THREE.BufferGeometry();
-    northStarGeo.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array([35, 10, -30]), 3)
-    );
-    const northStarMat = new THREE.PointsMaterial({
-      color: 0xfff8e0,
-      size: 3.5,
-      sizeAttenuation: true,
-      transparent: true,
-      opacity: 1,
-    });
-    const northStar = new THREE.Points(northStarGeo, northStarMat);
+    northStarGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([18, 22, -40]), 3));
+    const northStar = new THREE.Points(northStarGeo, new THREE.PointsMaterial({ color: 0xfff8d0, size: 1.2, sizeAttenuation: true }));
     scene.add(northStar);
 
-    // ─── Boat group ──────────────────────────────────────────────
-    const boat = new THREE.Group();
+    // ── Ocean waves (low poly, stays at bottom) ─────────────────────
+    const waveW = 80, waveD = 20, wSeg = 40, dSeg = 10;
+    const waveGeo = new THREE.PlaneGeometry(waveW, waveD, wSeg, dSeg);
+    waveGeo.rotateX(-Math.PI / 2);
+    const waveMat = new THREE.MeshStandardMaterial({
+      color: 0x1a3a6e,
+      metalness: 0.05,
+      roughness: 0.85,
+      transparent: true,
+      opacity: 0.92,
+    });
+    const ocean = new THREE.Mesh(waveGeo, waveMat);
+    ocean.position.y = -3;
+    scene.add(ocean);
 
-    // Hull
-    const hullGeo = new THREE.BoxGeometry(4, 1, 2);
-    const hullMat = new THREE.MeshStandardMaterial({ color: 0x8b5e3c });
-    const hull = new THREE.Mesh(hullGeo, hullMat);
-    hull.position.y = 0.5;
-    boat.add(hull);
+    // Store original vertex Y positions
+    const posAttr = waveGeo.attributes.position as THREE.BufferAttribute;
+    const baseY = new Float32Array(posAttr.count);
+    for (let i = 0; i < posAttr.count; i++) baseY[i] = posAttr.getY(i);
 
-    // Mast
-    const mastGeo = new THREE.CylinderGeometry(0.08, 0.08, 6, 8);
-    const mastMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    const mast = new THREE.Mesh(mastGeo, mastMat);
-    mast.position.set(0, 4, 0);
-    boat.add(mast);
+    // ── Paper Boat (origami-style, flat shading) ────────────────────
+    const boatGroup = new THREE.Group();
+    const paperMat = new THREE.MeshStandardMaterial({
+      color: 0xf5f0e8,
+      flatShading: true,
+      roughness: 0.95,
+      metalness: 0,
+    });
+    const foldMat = new THREE.MeshStandardMaterial({
+      color: 0xddd8cc,
+      flatShading: true,
+      roughness: 0.95,
+    });
 
-    // Sail — triangle BufferGeometry
-    const sailGeo = new THREE.BufferGeometry();
-    const sailVerts = new Float32Array([
-      0,   1,  0.1,   // bottom of mast
-      0,   6.5, 0.1,  // top of mast
-      2.2, 1.5, 0.1,  // outward billow
+    // Hull — flat folded paper shape (two triangular wedges)
+    const hullGeo = new THREE.BufferGeometry();
+    const hullVerts = new Float32Array([
+      // bottom center crease
+       0,  0,  0,
+      // port side
+      -2, 0.6, -1.2,
+      -2, 0.6,  1.2,
+      // starboard side
+       2, 0.6, -1.2,
+       2, 0.6,  1.2,
+      // bow point
+       0, 0.3,  2,
+      // stern point
+       0, 0.3, -2,
     ]);
-    sailGeo.setAttribute('position', new THREE.BufferAttribute(sailVerts, 3));
-    sailGeo.setIndex([0, 1, 2]);
+    const hullIdx = new Uint16Array([
+      0,1,2,  // port face
+      0,3,4,  // starboard face
+      0,2,4,  // bottom
+      0,1,3,  // back crease
+      1,2,5,  // port bow
+      3,4,5,  // starboard bow
+      1,3,6,  // stern port
+      2,4,6,  // stern starboard (unused, ok)
+    ]);
+    hullGeo.setAttribute('position', new THREE.BufferAttribute(hullVerts, 3));
+    hullGeo.setIndex(new THREE.BufferAttribute(hullIdx, 1));
+    hullGeo.computeVertexNormals();
+    boatGroup.add(new THREE.Mesh(hullGeo, paperMat));
+
+    // Sail — single folded triangle
+    const sailGeo = new THREE.BufferGeometry();
+    sailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+       0, 0,    0,   // base left
+       0, 2.4,  0,   // peak
+       0, 0,    1.0, // base right
+    ]), 3));
+    sailGeo.setIndex(new THREE.BufferAttribute(new Uint16Array([0,1,2, 2,1,0]), 1));
     sailGeo.computeVertexNormals();
-    const sailMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.9,
-      side: THREE.DoubleSide,
-    });
-    const sail = new THREE.Mesh(sailGeo, sailMat);
-    sail.position.set(-0.3, 1, 0);
-    boat.add(sail);
+    const sailMesh = new THREE.Mesh(sailGeo, foldMat);
+    sailMesh.position.set(0, 0.65, -0.2);
+    boatGroup.add(sailMesh);
 
-    // Initial boat position (left side of scene)
-    boat.position.set(-60, 0.5, 0);
-    scene.add(boat);
+    // Crease line on sail
+    const creaseGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0.65, -0.2),
+      new THREE.Vector3(0, 3.1, -0.2),
+    ]);
+    boatGroup.add(new THREE.Line(creaseGeo, new THREE.LineBasicMaterial({ color: 0xbbaa99, transparent: true, opacity: 0.5 })));
 
-    // ─── Wake particles ──────────────────────────────────────────
-    const wakeParticles: THREE.Mesh[] = [];
-    const wakeMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-    });
-    for (let i = 0; i < 20; i++) {
-      const wakeGeo = new THREE.SphereGeometry(0.12, 4, 4);
-      const wake = new THREE.Mesh(wakeGeo, wakeMat.clone());
-      scene.add(wake);
-      wakeParticles.push(wake);
+    boatGroup.scale.setScalar(0.55);
+    boatGroup.position.set(-18, -1.5, 8);
+    scene.add(boatGroup);
+
+    // ── Land silhouette (second page "arrival") ──────────────────────
+    const landGeo = new THREE.BufferGeometry();
+    landGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+      12, -3, -5,   18, 2, -5,   24, -1, -5,
+      28, -3, -5,   12, -3, -5,
+      18, 2,  -5,   22, 3.5, -5, 26, 1, -5,
+    ]), 3));
+    const landMat = new THREE.LineBasicMaterial({ color: 0x1a3320, transparent: true, opacity: 0.0 });
+    const land = new THREE.Line(landGeo, landMat);
+    scene.add(land);
+
+    // ── Foam particles near boat ─────────────────────────────────────
+    const foamCount = 24;
+    const foamPos = new Float32Array(foamCount * 3);
+    for (let i = 0; i < foamCount; i++) {
+      foamPos[i * 3]     = (Math.random() - 0.5) * 6;
+      foamPos[i * 3 + 1] = 0;
+      foamPos[i * 3 + 2] = (Math.random() - 0.5) * 4 + 8;
     }
+    const foamGeo = new THREE.BufferGeometry();
+    foamGeo.setAttribute('position', new THREE.BufferAttribute(foamPos, 3));
+    const foam = new THREE.Points(foamGeo, new THREE.PointsMaterial({ color: 0xaaccff, size: 0.12, transparent: true, opacity: 0.5 }));
+    scene.add(foam);
 
-    // ─── Bioluminescent glow (teal/cyan points near boat) ────────
-    const bioCount = 30;
-    const bioPosArr = new Float32Array(bioCount * 3);
-    for (let i = 0; i < bioCount; i++) {
-      bioPosArr[i * 3]     = (Math.random() - 0.5) * 12;
-      bioPosArr[i * 3 + 1] = 0.05;
-      bioPosArr[i * 3 + 2] = (Math.random() - 0.5) * 6;
-    }
-    const bioGeo = new THREE.BufferGeometry();
-    bioGeo.setAttribute('position', new THREE.BufferAttribute(bioPosArr, 3));
-    const bioMat = new THREE.PointsMaterial({
-      color: 0x00ffe0,
-      size: 0.3,
-      sizeAttenuation: true,
-      transparent: true,
-      opacity: 0.7,
-    });
-    const bio = new THREE.Points(bioGeo, bioMat);
-    scene.add(bio);
-
-    // ─── Animation loop ──────────────────────────────────────────
+    // ── Animation loop ───────────────────────────────────────────────
     const clock = new THREE.Clock();
-    let animId: number;
+    let frameId: number;
 
-    function lerp(a: number, b: number, t: number) {
-      return a + (b - a) * t;
-    }
-
-    function animate() {
-      animId = requestAnimationFrame(animate);
+    const animate = () => {
+      frameId = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
-      const sp = scrollRef.current;
+      const p = progressRef.current;
 
-      // Wave animation
+      // Animate ocean vertices
       for (let i = 0; i < posAttr.count; i++) {
         const x = posAttr.getX(i);
         const z = posAttr.getZ(i);
-        const wave =
-          Math.sin(x * 0.15 + t * 0.7) * 0.6 +
-          Math.sin(z * 0.1  + t * 0.5) * 0.4 +
-          Math.sin((x + z) * 0.08 + t * 0.9) * 0.25;
-        posAttr.setY(i, originalY[i] + wave);
+        posAttr.setY(i, baseY[i] + Math.sin(x * 0.4 + t * 1.2) * 0.25 + Math.sin(z * 0.6 + t * 0.8) * 0.15);
       }
       posAttr.needsUpdate = true;
-      oceanGeo.computeVertexNormals();
+      waveGeo.computeVertexNormals();
+
+      // Boat position — moves right as scroll progresses
+      const targetX = THREE.MathUtils.lerp(-18, 14, p);
+      boatGroup.position.x += (targetX - boatGroup.position.x) * 0.08;
+
+      // Gentle rocking
+      boatGroup.rotation.z = Math.sin(t * 0.9) * 0.04;
+      boatGroup.rotation.x = Math.sin(t * 0.6) * 0.02;
+      boatGroup.position.y = -1.5 + Math.sin(t * 0.7) * 0.12;
+
+      // Foam follows boat
+      foam.position.x = boatGroup.position.x;
+      foam.position.y = boatGroup.position.y + 1.5;
 
       // North star pulse
-      const pulse = 0.8 + Math.sin(t * 1.2) * 0.2;
-      northStarMat.size = 3.5 * pulse + sp * 2;
-      northStarMat.opacity = lerp(0.85, 1, sp);
+      (northStar.material as THREE.PointsMaterial).size = 1.2 + Math.sin(t * 1.5) * 0.3 + p * 0.6;
+      (northStar.material as THREE.PointsMaterial).opacity = 0.7 + p * 0.3;
 
-      // Star light intensity with scroll
-      starLight.intensity = lerp(0.3, 1.4, sp);
+      // Land fades in on scroll progress
+      (land.material as THREE.LineBasicMaterial).opacity = Math.max(0, (p - 0.6) * 2.5);
 
-      // Stars parallax
-      stars.position.x = sp * -6;
-      stars.position.y = sp * -2;
-
-      // Boat advance: lerp x from -60 to +20
-      const targetX = lerp(-60, 20, sp);
-      boat.position.x += (targetX - boat.position.x) * 0.08;
-      // Gentle rocking
-      boat.rotation.z = Math.sin(t * 0.8) * 0.03;
-      boat.rotation.x = Math.sin(t * 0.5) * 0.012;
-
-      // Wake particles trail behind boat
-      for (let i = 0; i < wakeParticles.length; i++) {
-        const offset = i * 0.7 + 1;
-        wakeParticles[i].position.set(
-          boat.position.x - offset,
-          0.08 + Math.sin(t * 2 + i) * 0.05,
-          boat.position.z + (Math.random() - 0.5) * 0.04
-        );
-        const dist = offset / (wakeParticles.length * 0.7);
-        (wakeParticles[i].material as THREE.MeshBasicMaterial).opacity =
-          Math.max(0, 0.55 - dist * 0.5);
-      }
-
-      // Bioluminescence follows boat
-      bio.position.x = boat.position.x;
-      bio.position.z = boat.position.z;
-      bioMat.opacity = 0.4 + Math.sin(t * 1.5) * 0.3;
+      // Stars subtle parallax
+      stars.position.x = p * -3;
 
       renderer.render(scene, camera);
-    }
-
+    };
     animate();
 
-    // ─── Resize handler ──────────────────────────────────────────
-    function onResize() {
-      if (!container) return;
-      camera.aspect = container.clientWidth / container.clientHeight;
+    // ── Resize ───────────────────────────────────────────────────────
+    const onResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    }
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
     window.addEventListener('resize', onResize);
 
-    // ─── Cleanup ─────────────────────────────────────────────────
     return () => {
-      cancelAnimationFrame(animId);
+      cancelAnimationFrame(frameId);
       window.removeEventListener('resize', onResize);
       renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-      // dispose geometries / materials
-      [oceanGeo, starGeo, northStarGeo, hullGeo, mastGeo, sailGeo, bioGeo].forEach(g => g.dispose());
-      [oceanMat, starMat, northStarMat, hullMat, mastMat, sailMat, bioMat, wakeMat].forEach(m => m.dispose());
-      wakeParticles.forEach(w => {
-        w.geometry.dispose();
-        (w.material as THREE.Material).dispose();
-      });
+      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
-  }, []); // run once
+  }, []);
 
   return (
     <div
       ref={mountRef}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: -1,
-        pointerEvents: 'none',
-        width: '100%',
-        height: '100%',
-      }}
+      style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}
     />
   );
 }

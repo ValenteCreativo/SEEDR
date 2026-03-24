@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { ArrowRight, Zap, Shield, Users, ChevronRight } from 'lucide-react';
@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 
 // Dynamically import Three.js scene to avoid SSR issues
 const NorthStarScene = dynamic(
-  () => import('@/components/seedr/NorthStarScene').then(m => ({ default: m.NorthStarScene })),
+  () => import('@/components/seedr/NorthStarScene'),
   { ssr: false }
 );
 
@@ -32,6 +32,18 @@ export default function LandingPage() {
     const max = el.scrollWidth - el.clientWidth;
     if (max <= 0) return;
     setScrollProgress(el.scrollLeft / max);
+  }, []);
+
+  // Redirect vertical wheel → horizontal scroll (passive:false required)
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      el.scrollLeft += e.deltaY + e.deltaX;
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
   }, []);
 
   return (
