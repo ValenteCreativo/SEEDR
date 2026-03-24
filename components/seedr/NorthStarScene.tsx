@@ -111,7 +111,7 @@ export default function NorthStarScene({ scrollProgress }: Props) {
 
     boat.scale.setScalar(0.5);
     boat.rotation.y = Math.PI / 2;   // face sideways — sailing left → right
-    boat.position.set(-7, -3.6, 0);
+    boat.position.set(-7, -4.8, 0);
     scene.add(boat);
 
     // ── Animate ──────────────────────────────────────────────────────
@@ -128,7 +128,7 @@ export default function NorthStarScene({ scrollProgress }: Props) {
       boat.position.x += (tx - boat.position.x) * 0.05;
       boat.rotation.z = Math.sin(t * 0.7) * 0.05;
       boat.rotation.x = Math.sin(t * 0.5) * 0.015;
-      boat.position.y = -3.6 + Math.sin(t * 0.8) * 0.12;
+      boat.position.y = -4.8 + Math.sin(t * 0.8) * 0.12;
 
       renderer.render(scene, camera);
     };
